@@ -1,3 +1,8 @@
+
+## BorsdataAPI
+Our simple Python console test client to get a quick start with Börsdata API.
+[More details about API is found here](https://github.com/Borsdata-Sweden/API)
+
 ## BorsdataAPI
 Our simple Python console test client to get a quick start with Börsdata API.
 [More details about API is found here](https://github.com/Borsdata-Sweden/API)
