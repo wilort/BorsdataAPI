@@ -35,7 +35,7 @@ class ExcelExporter:
             reports_quarter.to_excel(excel_writer, 'reports_quarter')
             reports_year.to_excel(excel_writer, 'reports_year')
             reports_r12.to_excel(excel_writer, 'reports_r12')
-            excel_writer.save()
+            excel_writer._save()
             print(f'Excel exported: {export_path + instrument_name + ".xlsx"}')
 
 

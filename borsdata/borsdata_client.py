@@ -1,5 +1,5 @@
 # importing the borsdata_api
-from borsdata_api import BorsdataAPI
+from borsdata.borsdata_api import BorsdataAPI
 # pandas is a data-analysis library for python (data frames)
 import pandas as pd
 # matplotlib for visual-presentations (plots)
@@ -20,6 +20,16 @@ class BorsdataClient:
     def __init__(self):
         self._borsdata_api = BorsdataAPI(constants.API_KEY)
         self._instruments_with_meta_data = pd.DataFrame()
+
+    def get_stocks_with_kpi(self):
+        # :param kpi_id: KPI ID
+        # :param calc_group: ['1year', '3year', '5year', '7year', '10year', '15year']
+        # :param calc: ['high', 'latest', 'mean', 'low', 'sum', 'cagr']
+        instruments_with_kpi_data = self._borsdata_api.get_kpi_data_all_instruments(kpi_id=2, calc_group='1year', calc='mean')
+        instruments_with_meta_data = self.instruments_with_meta_data()
+        instruments_in_sweden = instruments_with_meta_data[instruments_with_meta_data['country'] == 'Sverige']
+        instruments_with_kpi_data_in_sweden = instruments_with_kpi_data[instruments_with_kpi_data['insId'].isin(instruments_in_sweden['ins_id'])]
+
 
     def instruments_with_meta_data(self):
         """
@@ -77,7 +87,7 @@ class BorsdataClient:
             # adding one sheet
             instrument_df.to_excel(excel_writer, 'instruments_with_meta_data')
             # saving the document
-            excel_writer.save()
+            excel_writer._save()
             self._instruments_with_meta_data = instrument_df
             return instrument_df
 
@@ -251,5 +261,4 @@ if __name__ == "__main__":
     borsdata_client.instruments_with_meta_data()
     borsdata_client.plot_stock_prices(3)  # ABB
     borsdata_client.history_kpi(2, 'Large Cap', 'Sverige', 2020)  # 2 == Price/Earnings (PE)
-    borsdata_client.top_performers('Large Cap', 'Sverige', 10,
-                                   5)  # showing top10 performers based on 5 day return (1 week) for Large Cap Sverige.
+    borsdata_client.top_performers('Large Cap', 'Sverige', 10, 5)  # showing top10 performers based on 5 day return (1 week) for Large Cap Sverige.
