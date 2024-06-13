@@ -21,14 +21,19 @@ class BorsdataClient:
         self._borsdata_api = BorsdataAPI(constants.API_KEY)
         self._instruments_with_meta_data = pd.DataFrame()
 
-    def get_stocks_with_kpi(self):
-        # :param kpi_id: KPI ID
-        # :param calc_group: ['1year', '3year', '5year', '7year', '10year', '15year']
-        # :param calc: ['high', 'latest', 'mean', 'low', 'sum', 'cagr']
-        instruments_with_kpi_data = self._borsdata_api.get_kpi_data_all_instruments(kpi_id=2, calc_group='1year', calc='mean')
-        instruments_with_meta_data = self.instruments_with_meta_data()
-        instruments_in_sweden = instruments_with_meta_data[instruments_with_meta_data['country'] == 'Sverige']
-        instruments_with_kpi_data_in_sweden = instruments_with_kpi_data[instruments_with_kpi_data['insId'].isin(instruments_in_sweden['ins_id'])]
+    def instruments_with_kpi_data(self, kpi_id: int = 2, save_to_csv: bool = False) -> pd.DataFrame:
+
+        # https://github.com/Borsdata-Sweden/API/wiki/Kpi-Screener-List
+        # e.g. kpi=2 is Price/Earnings (PE)
+
+
+        instruments_with_kpi_data = self._borsdata_api.get_kpi_data_all_instruments(kpi_id=kpi_id, calc_group='1year', calc='latest')
+
+        if save_to_csv:
+            file_name = constants.EXPORT_PATH + f"instruments_with_kpi_{kpi_id}_data.csv"
+            instruments_with_kpi_data.to_csv(constants.EXPORT_PATH + file_name)
+
+        return instruments_with_kpi_data
 
 
     def instruments_with_meta_data(self):
